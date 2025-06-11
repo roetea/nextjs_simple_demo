@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Download OWASP ZAP Docker image
-      run: docker pull owasp/zap2docker-stable
+      run: docker pull zaproxy/zap-stable
 
     - name: Run ZAP Baseline Scan against Vercel URL
       run: |
@@ -73,7 +73,7 @@ jobs:
         # run ZAP baseline scan, outputting to the dynamic filename
         docker run --rm \
           -v "$(pwd)/zap-reports":/zap/reports \
-          owasp/zap2docker-stable \
+          zaproxy/zap-stable \
           zap-baseline.py \
           -t "$TARGET_URL" \
           -r "/zap/reports/${REPORT_NAME}" \
