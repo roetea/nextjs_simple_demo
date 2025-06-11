@@ -82,11 +82,11 @@ jobs:
         # expose the report name for the next step
         echo "REPORT_NAME=${REPORT_NAME}" >> $GITHUB_ENV
 
-    - name: Upload ZAP HTML Report
-      if: always()
+    - name: Show which report we'll upload
       run: |
-        echo "Uploading report: $REPORT_NAME"
-      # upload whichever file got generated
+        echo "Uploading report: ${{ env.REPORT_NAME }}"
+
+    - name: Upload ZAP HTML Report
       uses: actions/upload-artifact@v3
       with:
         name: zap-report
