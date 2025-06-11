@@ -93,7 +93,7 @@ jobs:
           zaproxy/zap-stable \
           zap-baseline.py \
           -t "$TARGET_URL" \
-          -r "/zap/wrk/$REPORT_NAME" \
+          -r "$REPORT_NAME" \
           -I
 
         # expose the report name for the next step
