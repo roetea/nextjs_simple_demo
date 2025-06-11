@@ -50,3 +50,44 @@ jobs:
         vercel-token: ${{ secrets.VERCEL_TOKEN }}
         vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
         vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+  zap:
+    name: OWASP ZAP Baseline Scan
+    needs: vercel
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download OWASP ZAP Docker image
+      run: docker pull owasp/zap2docker-stable
+
+    - name: Run ZAP Baseline Scan against Vercel URL
+      run: |
+        # generate a unique report name using the current epoch seconds
+        TIMESTAMP=$(date +%s)
+        REPORT_NAME="zap-report-${TIMESTAMP}.html"
+        echo "Report will be saved as: $REPORT_NAME"
+
+        TARGET_URL=${{ needs.vercel.outputs.preview_url }}
+
+        # ensure the output directory exists
+        mkdir -p zap-reports
+
+        # run ZAP baseline scan, outputting to the dynamic filename
+        docker run --rm \
+          -v "$(pwd)/zap-reports":/zap/reports \
+          owasp/zap2docker-stable \
+          zap-baseline.py \
+          -t "$TARGET_URL" \
+          -r "/zap/reports/${REPORT_NAME}" \
+          -I
+
+        # expose the report name for the next step
+        echo "REPORT_NAME=${REPORT_NAME}" >> $GITHUB_ENV
+
+    - name: Upload ZAP HTML Report
+      if: always()
+      run: |
+        echo "Uploading report: $REPORT_NAME"
+      # upload whichever file got generated
+      uses: actions/upload-artifact@v3
+      with:
+        name: zap-report
+        path: zap-reports/${{ env.REPORT_NAME }}
