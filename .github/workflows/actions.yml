@@ -69,7 +69,7 @@ jobs:
         echo "Scanning target: $TARGET_URL"
 
         # ensure the output directory exists
-        mkdir -p ${pwd}/zap-reports
+        mkdir -p "${pwd}/zap-reports"
         echo "Report directory: ${pwd}/zap-reports"
 
         # run ZAP baseline scan, outputting to the dynamic filename
