@@ -87,7 +87,7 @@ jobs:
         echo "Uploading report: ${{ env.REPORT_NAME }}"
 
     - name: Upload ZAP HTML Report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: zap-report
         path: zap-reports/${{ env.REPORT_NAME }}
