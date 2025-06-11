@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: semgrep
     outputs:
-      preview_url: ${{ steps.vercel_deploy.outputs.preview_url }}
+      preview_url: ${{ steps.vercel_deploy.outputs['preview-url'] }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
