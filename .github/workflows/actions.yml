@@ -29,6 +29,7 @@ jobs:
     needs: semgrep
     outputs:
       preview_url: ${{ steps.vercel_deploy.outputs['preview-url'] }}
+      prod_url: ${{ steps.get_prod.outputs['prod_url'] }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -47,9 +48,22 @@ jobs:
       id: vercel_deploy
       uses: amondnet/vercel-action@v25
       with:
+        vercel-args: '--prod'
         vercel-token: ${{ secrets.VERCEL_TOKEN }}
         vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
         vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+
+    - name: Query Vercel API for latest production URL
+      id: get_prod
+      env:
+        VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      run: |
+        RESPONSE=$(curl -s \
+          -H "Authorization: Bearer $VERCEL_TOKEN" \
+          "https://api.vercel.com/v9/projects/$PROJECT_ID/domains")
+        URL=$(echo "$RESPONSE" | jq -r '.domains[0].name')
+        echo "prod_url=https://$URL" >> $GITHUB_OUTPUT
   zap:
     name: OWASP ZAP Baseline Scan
     needs: vercel
@@ -65,7 +79,7 @@ jobs:
         REPORT_NAME="zap-report-${TIMESTAMP}.html"
         echo "Report will be saved as: $REPORT_NAME"
 
-        TARGET_URL=${{ needs.vercel.outputs.preview_url }}
+        TARGET_URL=${{ needs.vercel.outputs.prod_url }}
         echo "Scanning target: $TARGET_URL"
 
         # ensure the output directory exists
