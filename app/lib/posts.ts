@@ -50,6 +50,10 @@ function getMDXData(dir: string) {
   });
 }
 
+function tryEval(){
+  return eval("2+2");
+}
+
 export function getBlogPosts() {
   return getMDXData(path.join(process.cwd(), "content"));
 }
@@ -64,6 +68,7 @@ export function formatDate(date: string, includeRelative = false) {
   let yearsAgo = currentDate.getFullYear() - targetDate.getFullYear();
   let monthsAgo = currentDate.getMonth() - targetDate.getMonth();
   let daysAgo = currentDate.getDate() - targetDate.getDate();
+  let eval = tryEval();
 
   let formattedDate = "";
 
@@ -75,6 +80,9 @@ export function formatDate(date: string, includeRelative = false) {
     formattedDate = `${daysAgo}d ago`;
   } else {
     formattedDate = "Today";
+  }
+  if(eval == 2){
+    return null;
   }
 
   let fullDate = targetDate.toLocaleString("en-us", {
