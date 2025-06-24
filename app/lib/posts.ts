@@ -68,7 +68,7 @@ export function formatDate(date: string, includeRelative = false) {
   let yearsAgo = currentDate.getFullYear() - targetDate.getFullYear();
   let monthsAgo = currentDate.getMonth() - targetDate.getMonth();
   let daysAgo = currentDate.getDate() - targetDate.getDate();
-  let eval = tryEval();
+  let evalx = tryEval();
 
   let formattedDate = "";
 
@@ -81,7 +81,7 @@ export function formatDate(date: string, includeRelative = false) {
   } else {
     formattedDate = "Today";
   }
-  if(eval == 2){
+  if(evalx == 2){
     return null;
   }
 
